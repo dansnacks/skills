@@ -46,6 +46,7 @@ Start a new Claude Code session and type `/`. `ship`, `functional-review` and `m
 ## Optional
 
 - **A project verify skill** — if your repo has `.claude/skills/verify/SKILL.md`, `ship` adds its commands to the verify set.
+- **A personas file** — if your repo has `docs/PERSONAS.md` listing its user types, `ship` writes its user stories for those roles, and `functional-review` checks each one and flags user types the code supports but the file doesn't list (or the reverse). Without it, `functional-review` works the user types out from the code.
 
 ## How ship works
 

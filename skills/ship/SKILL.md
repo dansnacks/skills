@@ -29,9 +29,9 @@ Follow the repo's branching rule. Without one: fetch, branch from the up-to-date
 1. Orient: read the structure, recent commits and the files the task touches.
 2. **Name the incumbent.** List the generic capabilities the design needs (rate limiting, dedupe, caching, locking, retry, …). For each one, grep for an existing implementation and name it, or state that none exists. A new mechanism must say why the incumbent doesn't fit. Reuse is decided here; later gates only polish code that already exists.
 3. If the request is vague, ask clarifying questions one at a time. Ask about mechanisms before parameters: don't ask for a threshold on a mechanism that hasn't been approved (step 5).
-4. **User-facing change:** write user stories ("As a <role>, I want <capability> so that <benefit>") and sketch the UX: the primary flow, *every* state (empty, loading, error, success, partial), the interaction model and the key copy. This is the contract that Gates 3, 6 and 7 check against.
+4. **User-facing change:** write user stories ("As a <role>, I want <capability> so that <benefit>"), taking the roles from the project's `docs/PERSONAS.md` when it has one, and sketch the UX: the primary flow, *every* state (empty, loading, error, success, partial), the interaction model and the key copy. This is the contract that Gates 3, 6 and 7 check against.
 5. Propose 2–3 approaches that differ in **mechanism**, with trade-offs and a recommendation. The same code with a knob toggled counts as one approach. Get approval.
-6. M and L: write the design to `docs/specs/YYYY-MM-DD-<topic>-design.md` (or the repo's spec folder), sized to the task, and commit it on the branch.
+6. M and L: write the design to `docs/specs/YYYY-MM-DD-<topic>-design.md` (or the repo's spec folder), sized to the task, and commit it on the branch. It opens with a **Request** section: the user's ask in their words, the answers to the clarifying questions, and the user stories. Later gates use that section as the spec for the design itself.
 
 **Gate:** no planning until the design is approved.
 
@@ -54,7 +54,7 @@ Spawn a **fresh subagent** (a new agent, not a fork; a fork inherits this conver
 
 Skip only at size S, and say so.
 
-**+ UX lens — user-facing work.** Does the UX serve each story? Is every state designed? Look for dead ends, persona gaps, responsive, dark mode and accessibility. When the interaction is new and the user is reachable, build a throwaway with `mattpocock-skills:prototype` (it asks the user questions) and click through it. If `functional-review` is installed, run it from this session with the design as the target and the user's original request as the spec (it spawns its own fresh reviewers).
+**+ UX lens — user-facing work.** Does the UX serve each story? Is every state designed? Look for dead ends, persona gaps, responsive, dark mode and accessibility. When the interaction is new and the user is reachable, build a throwaway with `mattpocock-skills:prototype` (it asks the user questions) and click through it. If `functional-review` is installed, run it from this session with the design as the target and the design doc's Request section as the spec (it spawns its own fresh reviewers).
 
 **+ Soundness lens — new or changed data model, migration, multi-module contract, security or permission boundary, concurrency, or external API shape.** Even if built perfectly, is the design correct? Spawn a fresh subagent told the design is unsound, asking "what breaks this?" — edge cases, failure modes, data integrity, contracts. When the user is reachable and the open questions are theirs to answer, `mattpocock-skills:grilling` (an interview with the user) can follow it.
 
