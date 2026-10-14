@@ -11,7 +11,7 @@ The repo's own rules (`CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md`) win wherever 
 
 ## Start: preflight and gate plan
 
-1. **Check dependencies.** This skill calls `mattpocock-skills:grilling`, `mattpocock-skills:prototype`, `mattpocock-skills:code-review` and `mattpocock-skills:tdd`, plus the built-in `simplify`. If any of them isn't in your skill list, name it, point the user to the install steps in this skill's README (`/plugin marketplace add mattpocock/skills`, then `/plugin install mattpocock-skills@mattpocock`), and do that gate by hand from its description. Never drop a gate because a skill is missing. `functional-review` is optional: use it if it's installed.
+1. **Check dependencies.** This skill calls `mattpocock-skills:grilling`, `mattpocock-skills:prototype`, `mattpocock-skills:code-review` and `mattpocock-skills:tdd`, plus the built-in `simplify`. If any of them isn't in your skill list, name it, point the user to the install steps in this skill's README (`/plugin marketplace add mattpocock/skills`, then `/plugin install mattpocock-skills@mattpocock`), and do that gate by hand from its description. Never drop a gate because a skill is missing. `functional-review` (same repo as this skill) is optional: use it if it's installed.
 2. **Size the task.** This sets how much ceremony each gate gets:
    - **S** — about one file, no new mechanism, and nothing that would trigger Gate 3's soundness lens (any such trigger makes it M). S runs Gates 0, 1 (inline: a short paragraph in chat, no doc, still approved), 4, 6 (fresh attack only), 7 and 8. In place of Gate 2, state the verify set in one line. Gate 3 and Gate 5 are skipped and say so.
    - **M** — the default. Every gate as written below.
@@ -54,7 +54,7 @@ Spawn a **fresh subagent** (a new agent, not a fork; a fork inherits this conver
 
 Skip only at size S, and say so.
 
-**+ UX lens — user-facing work.** Does the UX serve each story? Is every state designed? Look for dead ends, persona gaps, responsive, dark mode and accessibility. When the interaction is new and the user is reachable, build a throwaway with `mattpocock-skills:prototype` (it asks the user questions) and click through it. If `functional-review` is installed, run it in a fresh subagent.
+**+ UX lens — user-facing work.** Does the UX serve each story? Is every state designed? Look for dead ends, persona gaps, responsive, dark mode and accessibility. When the interaction is new and the user is reachable, build a throwaway with `mattpocock-skills:prototype` (it asks the user questions) and click through it. If `functional-review` is installed, run it from this session with the design as the target and the user's original request as the spec (it spawns its own fresh reviewers).
 
 **+ Soundness lens — new or changed data model, migration, multi-module contract, security or permission boundary, concurrency, or external API shape.** Even if built perfectly, is the design correct? Spawn a fresh subagent told the design is unsound, asking "what breaks this?" — edge cases, failure modes, data integrity, contracts. When the user is reachable and the open questions are theirs to answer, `mattpocock-skills:grilling` (an interview with the user) can follow it.
 
@@ -94,7 +94,7 @@ Run these in parallel:
    - (a) **Conformance:** does the diff build what the spec asks, story by story?
    - (b) **Defects:** edge cases, error paths, races, regressions, security holes and wrong assumptions.
 2. **Standards and spec (M and L).** Run `mattpocock-skills:code-review`, passing **both** the fixed point (the base branch; it reviews the three-dot diff against the merge-base) and the design doc path, and say the design doc is the only spec — otherwise it looks for issue references in commit messages first. If it stops — for example to ask for `docs/agents/issue-tracker.md` — answer it from this context and carry on. A run that doesn't finish counts as a failed gate, not a skipped one.
-3. **UX drift (user-facing).** If `functional-review` is installed, run it in a fresh subagent against the Gate 1 UX. Otherwise fold the UX states into the attack prompt in item 1.
+3. **UX drift (user-facing).** If `functional-review` is installed, run it from this session with the diff as the target and the Gate 1 design as the spec (it spawns its own fresh reviewers). Otherwise fold the UX states into the attack prompt in item 1.
 
 Fix every finding, or decline it with a reason. Declines go in the report, and any declined high-severity finding goes to the next fresh review with your reason, so a reviewer — not you — accepts the decline.
 
@@ -135,7 +135,7 @@ Gates
   6 Review     attack: <n> found, <n> fixed, <n> declined · code-review: <n> standards / <n> spec | N/A (S) · UX drift: ran | N/A
   7 Verify     <command> → <passed>/<total>  (one line per command) · UI evidence: <where>
   Fix rounds   <n> of 3
-Reviewer prompts   for each fresh subagent: its inputs and its framing line, quoted
+Reviewer prompts   for each fresh subagent: its inputs and its framing line, quoted (for functional-review, copy its "How it ran" section)
 Declined findings  <finding → reason → reviewer accepted? >, or none
 Open questions     <only for unattended runs>
 ```

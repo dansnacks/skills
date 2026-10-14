@@ -5,6 +5,7 @@ Danny's Claude Code skills.
 | Skill | What it does |
 | --- | --- |
 | [`ship`](skills/ship/SKILL.md) | Runs a coding task through gates: Design → Plan → Plan review → Build → Simplify → Review → Verify → PR. It stops at an open PR with green CI and a gate report. |
+| [`functional-review`](skills/functional-review/SKILL.md) | A UX review by three fresh reviewers in parallel: dead ends, data that contradicts itself, and users who get stuck. `ship` uses it for user-facing work. |
 
 ## Install
 
@@ -21,24 +22,29 @@ In an interactive `claude` session:
 
 Tested with `mattpocock-skills` v1.3.1. `ship` refers to these skills by their full names (`mattpocock-skills:code-review` and so on), because Claude Code also has a built-in `/code-review`.
 
-### 2. Install ship
+### 2. Install the skills
 
-Clone the repo and symlink the skill, so a `git pull` updates it:
+Clone the repo and symlink each skill, so a `git pull` updates them:
 
 ```bash
 git clone https://github.com/dansnacks/skills.git
+mkdir -p ~/.claude/skills
 ln -s "$PWD/skills/skills/ship" ~/.claude/skills/ship
+ln -s "$PWD/skills/skills/functional-review" ~/.claude/skills/functional-review
 ```
 
-If you'd rather copy it (`cp -R skills/skills/ship ~/.claude/skills/`), re-copy it after every pull, or Claude keeps loading the old version.
+If you'd rather copy them, copy both (`cp -R skills/skills/ship skills/skills/functional-review ~/.claude/skills/`) and re-copy after every pull, or Claude keeps loading the old versions.
 
-### 3. Check it loaded
+### 3. Remove old copies
 
-Start a new Claude Code session and type `/`. Both `ship` and `mattpocock-skills:code-review` should be in the list.
+If you have an older `functional-review` as a command, delete `~/.claude/commands/functional-review.md` so it doesn't shadow the skill. Same for any older `ship` in `~/.claude/skills/` or `~/.claude/commands/`.
+
+### 4. Check it loaded
+
+Start a new Claude Code session and type `/`. `ship`, `functional-review` and `mattpocock-skills:code-review` should all be in the list. `ship` still works without `functional-review`; it folds the UX checks into its own review.
 
 ## Optional
 
-- **`functional-review`** — a UX review across three lenses: dead ends, data coherence and persona gaps. `ship` uses it if it's installed, and folds the same checks into its own review if not. It isn't in this repo yet.
 - **A project verify skill** — if your repo has `.claude/skills/verify/SKILL.md`, `ship` adds its commands to the verify set.
 
 ## How ship works
